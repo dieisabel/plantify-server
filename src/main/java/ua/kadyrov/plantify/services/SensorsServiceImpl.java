@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ua.kadyrov.plantify.dtos.SensorsData;
 import ua.kadyrov.plantify.enums.LightLevel;
+import ua.kadyrov.plantify.enums.MoistureLevel;
 import ua.kadyrov.plantify.exceptions.NetworkException;
 
 import java.io.IOException;
@@ -52,7 +53,7 @@ public class SensorsServiceImpl implements SensorsService {
         return new SensorsData(
                 raw.getTemperature(),
                 LightLevel.fromInt(raw.getLight()),
-                raw.getMoisture()
+                MoistureLevel.fromInt(raw.getMoisture())
         );
     }
 }
