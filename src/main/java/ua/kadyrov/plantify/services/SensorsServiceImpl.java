@@ -1,9 +1,12 @@
 package ua.kadyrov.plantify.services;
 
 import com.google.gson.Gson;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ua.kadyrov.plantify.dtos.SensorsData;
+import ua.kadyrov.plantify.enums.LightLevel;
 import ua.kadyrov.plantify.exceptions.NetworkException;
 
 import java.io.IOException;
@@ -21,6 +24,14 @@ public class SensorsServiceImpl implements SensorsService {
     @Value("${plantify.device.port}")
     private int devicePort;
 
+    @AllArgsConstructor
+    @Data
+    public class RawSensorsData {
+        private int temperature;
+        private int light;
+        private int moisture;
+    }
+
     @Override
     public SensorsData fetchData() {
         HttpResponse<String> response;
@@ -37,6 +48,11 @@ public class SensorsServiceImpl implements SensorsService {
         } catch (IOException | InterruptedException exception) {
             throw new NetworkException("Error while sending or receiving sensors data");
         }
-        return new Gson().fromJson(response.body(), SensorsData.class);
+        RawSensorsData raw = new Gson().fromJson(response.body(), RawSensorsData.class);
+        return new SensorsData(
+                raw.getTemperature(),
+                LightLevel.fromInt(raw.getLight()),
+                raw.getMoisture()
+        );
     }
 }
