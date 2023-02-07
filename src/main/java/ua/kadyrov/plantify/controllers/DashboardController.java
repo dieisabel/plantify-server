@@ -18,12 +18,17 @@ public class DashboardController {
     private SensorsService service;
 
     @GetMapping
-    public String getDashboard() {
-        return "dashboard";
+    public String getDashboardTemplate() {
+        return "dashboard.html";
     }
 
     @ModelAttribute("data")
     SensorsData fetchSensorsData() {
         return service.fetchData();
+    }
+
+    @ModelAttribute("title")
+    String getTitle() {
+        return "Dashboard";
     }
 }
